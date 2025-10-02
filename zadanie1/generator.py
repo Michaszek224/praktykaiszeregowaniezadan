@@ -1,4 +1,4 @@
-#generowanie n-liczba paczek
+#n-liczba paczek 50..500 co 50
 #generowanie s- czas pomiedzy
 
 #dla poszczegolncyh zadan n
