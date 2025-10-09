@@ -19,7 +19,7 @@ P_MAX = 20
 WSPOLCZYNNIK_DJ = 0.8
 
 # Nazwa folderu do zapisu wygenerowanych plików
-OUTPUT_DIR = "dane_wejsciowe"
+OUTPUT_DIR = "155863Generator"
 
 def generuj_instancje():
     """
@@ -56,7 +56,7 @@ def generuj_instancje():
             zadania.append((p, d))
 
         # 4. Zapisywanie danych do pliku
-        nazwa_pliku = f"problem_n_{n}.txt"
+        nazwa_pliku = f"155863_{n}.txt"
         sciezka_pliku = os.path.join(OUTPUT_DIR, nazwa_pliku)
 
         try:
