@@ -6,9 +6,9 @@ def weryfikuj(plik_problemu, plik_rozwiazania):
     Weryfikuje poprawność pliku rozwiązania na podstawie pliku problemu.
     (Ta funkcja pozostała bez zmian w swojej logice, zmienił się sposób jej wywołania).
     """
-    print(f"Plik problemu: '{plik_problemu}'")
-    print(f"Plik rozwiązania: '{plik_rozwiazania}'")
-    print("-" * 35)
+    # print(f"Plik problemu: '{plik_problemu}'")
+    # print(f"Plik rozwiązania: '{plik_rozwiazania}'")
+    # print("-" * 35)
 
     # --- KROK 1: Wczytywanie pliku problemu ---
     try:
@@ -63,7 +63,7 @@ def weryfikuj(plik_problemu, plik_rozwiazania):
         print("❌ BŁĄD STRUKTURALNY: Zadania w pliku rozwiązania nie są poprawne (brakuje zadań lub są duplikaty).")
         return
     
-    print("✅ Struktura rozwiązania jest poprawna.")
+    # print("✅ Struktura rozwiązania jest poprawna.")
 
     # --- KROK 4: Obliczanie całkowitego opóźnienia ---
     czas_bieżący = 0
@@ -79,12 +79,12 @@ def weryfikuj(plik_problemu, plik_rozwiazania):
         czas_bieżący = czas_ukończenia_batcha + s
 
     # --- KROK 5: Porównanie wyników i werdykt ---
-    print("\n--- Werdykt ---")
-    print(f"Obliczona suma opóźnień (∑Dj): {obliczone_całkowite_opóźnienie}")
-    print(f"Zgłoszona suma opóźnień w pliku: {zgłoszone_opóźnienie}")
+    # print("\n--- Werdykt ---")
+    # print(f"Obliczona suma opóźnień (∑Dj): {obliczone_całkowite_opóźnienie}")
+    # print(f"Zgłoszona suma opóźnień w pliku: {zgłoszone_opóźnienie}")
 
     if obliczone_całkowite_opóźnienie == zgłoszone_opóźnienie:
-        print("\n✅ POPRAWNIE! Wartość funkcji celu zgadza się z obliczeniami.")
+        print("\n POPRAWNIE! Wartość funkcji celu zgadza się z obliczeniami.")
     else:
         print("\n❌ BŁĄD! Wartość funkcji celu nie zgadza się.")
         print(f"   Różnica: {abs(obliczone_całkowite_opóźnienie - zgłoszone_opóźnienie)}")
@@ -114,10 +114,10 @@ if __name__ == "__main__":
     print("=========================================================")
 
     # Pętla iterująca po wszystkich rozmiarach problemu (50, 100, ..., 500)
-    for n in range(50, 501, 50):
+    for n in range(50,501,50) :
         # Tworzenie nazw plików na podstawie wzorca
-        nazwa_pliku_rozwiazania = f"out_{n}.txt"
-        nazwa_pliku_problemu = f"problem_n_{n}.txt"
+        nazwa_pliku_rozwiazania = f"155863_{n}_wynik.txt"
+        nazwa_pliku_problemu = f"155863_{n}.txt"
 
         sciezka_rozwiazania = os.path.join(katalog_rozwiazan, nazwa_pliku_rozwiazania)
         sciezka_problemu = os.path.join(katalog_problemow, nazwa_pliku_problemu)
