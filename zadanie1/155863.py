@@ -1,7 +1,9 @@
 import os
 import sys
+import time
 
-def algorytm(input_path, output_path):
+def algorytm(input_path, output_path, czas):
+    start = time.time()
     #wczytywanie danyych
     try:
         with open(input_path, 'r') as f:
@@ -21,7 +23,7 @@ def algorytm(input_path, output_path):
         print(f"Błąd: Nie znaleziono pliku wejściowego '{input_path}'.")
         return
     except (ValueError, IndexError):
-        print(f"Błąd: Nieprawidłowy format danych w pliku '{input_path}'.")
+        print(f"Błąd: Nieprawidłowy format danych w pliku '{input_path}'.{ValueError}")
         return
 
     #przetwarzenai po wczytaniu
@@ -73,6 +75,10 @@ def algorytm(input_path, output_path):
         if i < len(wszystkie_batche) - 1:
             czas_ukonczenia += s
 
+    end = time.time()
+    if end-start > czas:
+        print("za duzo czasu")
+        return 
     #zapis do plilku
     try:
         #sprawdzanie czy folder isstnieje
@@ -87,7 +93,8 @@ def algorytm(input_path, output_path):
                 line = ' '.join(str(zadanie['id']) for zadanie in batch)
                 f_out.write(f"{line}\n")
         
-        print(f"Przetwarzanie zakończone. Wynik zapisano w pliku: {output_path}")
+        # print(f"Przetwarzanie zakończone. Wynik zapisano w pliku: {output_path}")
+        print(f"opoznienie: {opoznienie_calkowite}")
 
     except IOError as e:
         print(f"Błąd podczas zapisu do pliku '{output_path}': {e}")
@@ -96,9 +103,15 @@ def algorytm(input_path, output_path):
 # === Uruchomienie skryptu ===
 if __name__ == "__main__":
     # Definicja ścieżek
-    for n in range(50,501,50):    
-        input_file = os.path.join('155863Generator', f'155863_{n}.txt')
-        output_file = os.path.join('wyniki', f'155863_{n}_wynik.txt')
+    if len(sys.argv) != 4:
+        print("Błąd: Nieprawidłowa liczba argumentów.")
+        print("Sposób użycia: python 155863.py <plik_wejsciowy> <index> <plik_wyjsciowy> <limit_czasu>")
+        sys.exit(1)
+
+    plik_wejsciowy = sys.argv[1]
+    wyniki = sys.argv[2]
+    czas = float(sys.argv[3])
+    
         
-        # Wywołanie głównej funkcji
-        algorytm(input_file, output_file)
+    # Wywołanie głównej funkcji
+    algorytm(plik_wejsciowy, wyniki, czas)

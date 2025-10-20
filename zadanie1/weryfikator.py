@@ -80,8 +80,8 @@ def weryfikuj(plik_problemu, plik_rozwiazania):
 
     # --- KROK 5: Porównanie wyników i werdykt ---
     # print("\n--- Werdykt ---")
-    # print(f"Obliczona suma opóźnień (∑Dj): {obliczone_całkowite_opóźnienie}")
-    # print(f"Zgłoszona suma opóźnień w pliku: {zgłoszone_opóźnienie}")
+    print(f"Obliczona suma opóźnień (∑Dj): {obliczone_całkowite_opóźnienie}")
+    print(f"Zgłoszona suma opóźnień w pliku: {zgłoszone_opóźnienie}")
 
     if obliczone_całkowite_opóźnienie == zgłoszone_opóźnienie:
         print("\n POPRAWNIE! Wartość funkcji celu zgadza się z obliczeniami.")
@@ -116,8 +116,8 @@ if __name__ == "__main__":
     # Pętla iterująca po wszystkich rozmiarach problemu (50, 100, ..., 500)
     for n in range(50,501,50) :
         # Tworzenie nazw plików na podstawie wzorca
-        nazwa_pliku_rozwiazania = f"155863_{n}_wynik.txt"
-        nazwa_pliku_problemu = f"155863_{n}.txt"
+        nazwa_pliku_rozwiazania = f"{n}.txt"
+        nazwa_pliku_problemu = f"in_155863_{n}.txt"
 
         sciezka_rozwiazania = os.path.join(katalog_rozwiazan, nazwa_pliku_rozwiazania)
         sciezka_problemu = os.path.join(katalog_problemow, nazwa_pliku_problemu)

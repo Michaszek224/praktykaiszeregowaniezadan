@@ -19,7 +19,7 @@ P_MAX = 20
 WSPOLCZYNNIK_DJ = 0.8
 
 # Nazwa folderu do zapisu wygenerowanych plików
-OUTPUT_DIR = "155863Generator"
+OUTPUT_DIR = "dane"
 
 def generuj_instancje():
     """
