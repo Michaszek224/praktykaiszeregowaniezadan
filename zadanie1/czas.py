@@ -8,7 +8,7 @@ import time
 def verify_execution(executable_path, instance_path, output_path, time_limit):
     
     
-    command = [executable_path, instance_path, output_path, str(time_limit)]
+    command = ["python", executable_path, instance_path, output_path, str(time_limit)]
     
     print(f"{command[1]}")
     
