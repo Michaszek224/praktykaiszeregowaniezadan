@@ -21,6 +21,6 @@ for n in n_size:
         f.write(f"{n}\n")
         for i in range(n):
             waga = random.randint(przedzial_wag_dol, przedzial_wag_gora)
-            czas_naprawy = random.randint(n//10, 2*n)
-            czas_oddania = random.randint(n//5, n)
+            czas_naprawy = random.randint(n//10, n)
+            czas_oddania = random.randint(0, n*n//5)
             f.write(f"{czas_naprawy} {czas_oddania} {waga}\n")
