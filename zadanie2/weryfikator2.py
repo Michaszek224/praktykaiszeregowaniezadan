@@ -57,7 +57,7 @@ def weryfikuj(plik_wejsciowy, plik_wyjsciowy):
     ostrzezenia = []
     
     # Test 1: Sprawdź liczbę zadań
-    #print("\n[TEST 1] Sprawdzanie liczby zadań...")
+    print("\n[TEST 1] Sprawdzanie liczby zadań...")
     wszystkie_zadania = []
     for stanowisko in stanowiska:
         wszystkie_zadania.extend(stanowisko)
@@ -70,7 +70,7 @@ def weryfikuj(plik_wejsciowy, plik_wyjsciowy):
         print(f"OK: Liczba zadań zgadza się ({n})")
     
     # Test 2: Sprawdź unikalność zadań
-    #print("\n[TEST 2] Sprawdzanie unikalności zadań...")
+    print("\n[TEST 2] Sprawdzanie unikalności zadań...")
     zadania_set = set(wszystkie_zadania)
     
     if len(zadania_set) != len(wszystkie_zadania):
@@ -81,7 +81,7 @@ def weryfikuj(plik_wejsciowy, plik_wyjsciowy):
         print(f"OK: Wszystkie zadania są unikalne")
     
     # Test 3: Sprawdź czy wszystkie zadania są w zakresie 1..n
-    #print("\n[TEST 3] Sprawdzanie poprawności numerów zadań...")
+    print("\n[TEST 3] Sprawdzanie poprawności numerów zadań...")
     niepoprawne = [x for x in wszystkie_zadania if x < 1 or x > n]
     
     if niepoprawne:
@@ -91,7 +91,7 @@ def weryfikuj(plik_wejsciowy, plik_wyjsciowy):
         print(f"OK: Wszystkie numery zadań są w zakresie [1, {n}]")
     
     # Test 4: Sprawdź czy wszystkie zadania występują
-    #print("\n[TEST 4] Sprawdzanie kompletności zadań...")
+    print("\n[TEST 4] Sprawdzanie kompletności zadań...")
     brakujace = set(range(1, n+1)) - zadania_set
     
     if brakujace:
@@ -101,7 +101,7 @@ def weryfikuj(plik_wejsciowy, plik_wyjsciowy):
         print(f"OK: Wszystkie zadania występują w harmonogramie")
     
     # Test 5: Oblicz i sprawdź wartość kryterium
-    #print("\n[TEST 5] Sprawdzanie wartości kryterium...")
+    print("\n[TEST 5] Sprawdzanie wartości kryterium...")
     if not bledy:  # Tylko jeśli nie ma błędów w poprzednich testach
         wynik_obliczony = oblicz_kryterium(zadania, stanowiska)
         
