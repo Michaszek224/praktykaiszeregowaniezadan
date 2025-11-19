@@ -10,5 +10,7 @@ fi
 for i in {50..500..50}
 do
     echo "$i"
-    python algorytmy/${index}/main.py dane/${index}/in_${index}_${i}.txt wyniki/${index}/${i}.txt
+    val=$((i/10))
+    python algorytmy/${index}/main.py dane/${index}/in_${index}_${i}.txt wyniki/${index}/${i}.txt $val
+    echo "$val"
 done

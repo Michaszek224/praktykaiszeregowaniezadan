@@ -151,8 +151,8 @@ def save_output(solution, filename):
             f.write(" ".join(map(str, machine)) + "\n")
 
 def main():
-    if len(sys.argv) != 3:
-        print("python main.py <input_file> <output_file>")
+    if len(sys.argv) != 4:
+        print("python main.py <input_file> <output_file> <time_limit>")
         sys.exit(1)
     
     input_file = sys.argv[1]
