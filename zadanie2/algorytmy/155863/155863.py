@@ -1,7 +1,6 @@
 import random
 import sys
 import math
-import copy
 
 class Task:
     def __init__(self, id, p, r, w):
@@ -32,7 +31,6 @@ def read_input(filename):
     return tasks
 
 def calculate_cost(solution, tasks):
-    """Oblicza całkowity koszt rozwiązania"""
     total_cost = 0
     task_dict = {t.id: t for t in tasks}
     
@@ -116,7 +114,6 @@ def get_neighbor(solution, tasks):
 
 def simulated_annealing(tasks, initial_temp=1000, cooling_rate=0.995, 
                        min_temp=0.1, max_iterations=50000):
-    """Algorytm wyżarzania"""
     current = generate_initial_solution(tasks)
     best = current.copy()
     
@@ -133,18 +130,17 @@ def simulated_annealing(tasks, initial_temp=1000, cooling_rate=0.995,
             
             if current.cost < best.cost:
                 best = current.copy()
-                print(f"Iteracja {iteration}: Nowy najlepszy koszt = {best.cost}")
+                #print(f"Iteracja {iteration}: Nowy najlepszy koszt = {best.cost}")
         
         temperature *= cooling_rate
         iteration += 1
         
-        if iteration % 1000 == 0:
-            print(f"Iteracja {iteration}, T={temperature:.2f}, Obecny={current.cost}, Najlepszy={best.cost}")
+        #if iteration % 1000 == 0:
+            #print(f"Iteracja {iteration}, T={temperature:.2f}, Obecny={current.cost}, Najlepszy={best.cost}")
     
     return best
 
 def save_output(solution, filename):
-    """Zapisuje rozwiązanie do pliku"""
     with open(filename, 'w') as f:
         f.write(f"{int(solution.cost)}\n")
         for machine in solution.machines:
@@ -158,11 +154,11 @@ def main():
     input_file = sys.argv[1]
     output_file = sys.argv[2]
     
-    print("Wczytywanie danych...")
+    #print("Wczytywanie danych...")
     tasks = read_input(input_file)
-    print(f"Liczba zadań: {len(tasks)}")
+    #print(f"Liczba zadań: {len(tasks)}")
     
-    print("\nUruchamianie algorytmu wyżarzania...")
+    #print("\nUruchamianie algorytmu wyżarzania...")
     best_solution = simulated_annealing(
         tasks,
         initial_temp=1000,
@@ -171,13 +167,13 @@ def main():
         max_iterations=50000
     )
     
-    print(f"\nNajlepszy koszt: {best_solution.cost}")
-    print("\nRozłożenie zadań na stanowiska:")
-    for i, machine in enumerate(best_solution.machines, 1):
-        print(f"Stanowisko {i}: {machine}")
+    #print(f"\nNajlepszy koszt: {best_solution.cost}")
+    #print("\nRozłożenie zadań na stanowiska:")
+    #for i, machine in enumerate(best_solution.machines, 1):
+        #print(f"Stanowisko {i}: {machine}")
     
     save_output(best_solution, output_file)
-    print(f"\nWynik zapisano do {output_file}")
+    #print(f"\nWynik zapisano do {output_file}")
 
 if __name__ == "__main__":
     main()
