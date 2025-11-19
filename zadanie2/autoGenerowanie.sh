@@ -1,7 +1,7 @@
 #!/bin/bash
 
 index=$1
-
+mkdir -p wyniki/${index}
 if [ -z "$index" ]
 then
     echo "Usage: $0 <index>"
