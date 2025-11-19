@@ -12,7 +12,6 @@ NUMER="$1"
 
 for ((i=50; i<=500; i+=50)); do
     echo "===> Uruchamiam test: dane/${NUMER}/in_${NUMER}_${i}.txt"
-    python weryfikator.py "dane/${NUMER}/in_${NUMER}_${i}.txt" "wynikiTest/out_${i}.txt"
-    echo "-------------------------------------------"
+    python weryfikator.py "dane/${NUMER}/in_${NUMER}_${i}.txt" "wyniki/${NUMER}/${i}.txt"
 done
 
