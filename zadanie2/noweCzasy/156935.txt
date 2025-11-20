@@ -1,12 +1,10 @@
-0,06
-0,21
-0,87
-3,87
-7,68
-30,00
-19,45
-26,81
-❌ BŁĄD: Przekroczono limit czasu!
-⏱️  Program działał dłużej niż 45,0 s i został zatrzymany,
-❌ BŁĄD: Przekroczono limit czasu!
-⏱️  Program działał dłużej niż 50,0 s i został zatrzymany,
+0,05
+0,20
+0,82
+3,93
+7,72
+29,13
+19,36
+25,82
+45,05
+50,06

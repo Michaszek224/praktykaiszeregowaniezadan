@@ -8,37 +8,34 @@ def verify_execution(executable_path, instance_path, output_path, time_limit):
     
     # Sprawdź czy to plik .py i dodaj interpreter
     if executable_path.endswith('.py'):
+        # Przekazujemy limit czasu jako argument, ale wrapper go nie egzekwuje "siłowo"
         command = ["python3", executable_path, instance_path, output_path, str(int(time_limit))]
     else:
         command = [executable_path, instance_path, output_path, str(time_limit)]
     
-    #print(f"{command[1]}")
-    
+    start_time = time.monotonic()
+
     try:
-        start_time = time.monotonic()
-  
+        # Usunąłem parametr 'timeout'. Teraz wrapper czeka, aż program sam skończy.
         subprocess.run(
             command, 
-            #timeout=time_limit, 
             check=True,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL
         )
+        
+        # Program skończył się (szybko lub wolno) - mierzymy czas
         end_time = time.monotonic()
         duration = end_time - start_time
         print(f"{duration:.2f}")
         
+    # Wyjątek TimeoutExpired jest teraz niemożliwy, więc go usunąłem.
+        
     except FileNotFoundError:
         print(f"❌ BŁĄD: Nie znaleziono pliku wykonywalnego '{executable_path}'.")
-        print("   Upewnij się, że podałeś poprawną ścieżkę i plik ma uprawnienia do wykonania.")
-    
-    except subprocess.TimeoutExpired:
-        print(f"❌ BŁĄD: Przekroczono limit czasu!")
-        print(f"⏱️  Program działał dłużej niż {time_limit} s i został zatrzymany.")
     
     except subprocess.CalledProcessError as e:
         print(f"❌ BŁĄD: Program zakończył działanie z kodem błędu {e.returncode}.")
-        print("   Oznacza to, że wystąpił błąd w trakcie jego wykonywania (niezwiązany z limitem czasu).")
     
     except Exception as e:
         print(f"❌ Wystąpił nieoczekiwany błąd: {e}")
@@ -48,8 +45,6 @@ if __name__ == "__main__":
         print("Błąd: Nieprawidłowa liczba argumentów.")
         print("Sposób użycia:")
         print(f"  python {sys.argv[0]} <plik_wykonywalny> <plik_instancji> <plik_wynikowy> <limit_czasu_s>")
-        print("\nPrzykład:")
-        print(f"  python {sys.argv[0]} ./moj_algorytm.py dane/in1.txt wyniki/out1.txt 10.5")
         sys.exit(1)
     
     executable = sys.argv[1]
