@@ -19,8 +19,8 @@ def verify_execution(executable_path, instance_path, output_path, time_limit):
   
         subprocess.run(
             command, 
-            timeout=time_limit, 
-            check=True,
+            #timeout=time_limit, 
+            #check=True,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL
         )

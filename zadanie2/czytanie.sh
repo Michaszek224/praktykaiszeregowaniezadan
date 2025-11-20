@@ -9,6 +9,6 @@ then
 fi
 for i in {50..500..50}
 do
-    echo "$i= `cat wyniki/$index/$i.txt | head -n 1`"
+    echo "`cat wyniki/$index/$i.txt | head -n 1`"
     echo "`cat wyniki/$index/$i.txt | head -n 1`" >> wynikiKompresja/$index.txt
 done

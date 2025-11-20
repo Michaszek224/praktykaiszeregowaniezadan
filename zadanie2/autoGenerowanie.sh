@@ -15,5 +15,5 @@ for i in {50..500..50}
 do
     echo "$i"
     val=$((i/10))
-    python czas.py algorytmy/${index}/${index}.py dane/${index}/in_${index}_${i}.txt wyniki/${index}/${i}.txt $val >> wynikiCzasy/${index}.txt
+    python czas.py algorytmy/${index}/${index}.py dane/155863/in_155863_${i}.txt wyniki/${index}/${i}.txt $val >> wynikiCzasy/${index}.txt
 done
