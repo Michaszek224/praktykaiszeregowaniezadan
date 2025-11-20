@@ -1,6 +1,7 @@
 import random
 import sys
 import math
+import time
 
 class Task:
     def __init__(self, id, p, r, w):
@@ -112,34 +113,28 @@ def get_neighbor(solution, tasks):
     new_solution.cost = calculate_cost(new_solution, tasks)
     return new_solution
 
-def simulated_annealing(tasks, initial_temp=1000, cooling_rate=0.995, 
-                       min_temp=0.1, max_iterations=50000):
+def simulated_annealing(tasks, time_limit, initial_temp=1000, cooling_rate=0.9999, min_temp=0.01):
+    start_time = time.time()
+
     current = generate_initial_solution(tasks)
     best = current.copy()
-    
     temperature = initial_temp
-    iteration = 0
-    
-    while temperature > min_temp and iteration < max_iterations:
+
+    while time.time() - start_time < time_limit:
         neighbor = get_neighbor(current, tasks)
         delta = neighbor.cost - current.cost
         
-        # Akceptuj rozwiązanie
         if delta < 0 or random.random() < math.exp(-delta / temperature):
             current = neighbor
-            
+
             if current.cost < best.cost:
                 best = current.copy()
-                #print(f"Iteracja {iteration}: Nowy najlepszy koszt = {best.cost}")
-        
-        temperature *= cooling_rate
-        iteration += 1
-        
-        #if iteration % 1000 == 0:
-            #print(f"Iteracja {iteration}, T={temperature:.2f}, Obecny={current.cost}, Najlepszy={best.cost}")
-    
-    return best
 
+        temperature *= cooling_rate
+        if temperature < min_temp:
+            temperature = initial_temp  # restart SA (tzw. reheating)
+
+    return best
 def save_output(solution, filename):
     with open(filename, 'w') as f:
         f.write(f"{int(solution.cost)}\n")
@@ -153,6 +148,7 @@ def main():
     
     input_file = sys.argv[1]
     output_file = sys.argv[2]
+    time_limit = float(sys.argv[3])
     
     #print("Wczytywanie danych...")
     tasks = read_input(input_file)
@@ -161,10 +157,10 @@ def main():
     #print("\nUruchamianie algorytmu wyżarzania...")
     best_solution = simulated_annealing(
         tasks,
+        time_limit -1,
         initial_temp=1000,
         cooling_rate=0.995,
-        min_temp=0.1,
-        max_iterations=50000
+        min_temp=0.1
     )
     
     #print(f"\nNajlepszy koszt: {best_solution.cost}")
