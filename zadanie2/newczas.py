@@ -8,25 +8,27 @@ def verify_execution(executable_path, instance_path, output_path, time_limit):
     
     # Sprawdź czy to plik .py i dodaj interpreter
     if executable_path.endswith('.py'):
-        command = ["python3", executable_path, instance_path, output_path, str(int(time_limit))]
+        command = [sys.executable, executable_path, instance_path, output_path, str(time_limit)]
     else:
         command = [executable_path, instance_path, output_path, str(time_limit)]
-    
-    #print(f"{command[1]}")
     
     try:
         start_time = time.monotonic()
   
-        subprocess.run(
+        result = subprocess.run(
             command, 
-            #timeout=time_limit, 
+            timeout=time_limit + 1,  # Dodaj trochę bufora
             check=True,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL
+            capture_output=True,  # Zmienione z DEVNULL
+            text=True
         )
         end_time = time.monotonic()
         duration = end_time - start_time
         print(f"{duration:.2f}")
+        
+        # Opcjonalnie: pokaż output tylko jeśli był błąd
+        # if result.stderr:
+        #     print("STDERR:", result.stderr, file=sys.stderr)
         
     except FileNotFoundError:
         print(f"❌ BŁĄD: Nie znaleziono pliku wykonywalnego '{executable_path}'.")
@@ -38,7 +40,8 @@ def verify_execution(executable_path, instance_path, output_path, time_limit):
     
     except subprocess.CalledProcessError as e:
         print(f"❌ BŁĄD: Program zakończył działanie z kodem błędu {e.returncode}.")
-        print("   Oznacza to, że wystąpił błąd w trakcie jego wykonywania (niezwiązany z limitem czasu).")
+        print(f"   STDOUT: {e.stdout}")
+        print(f"   STDERR: {e.stderr}")
     
     except Exception as e:
         print(f"❌ Wystąpił nieoczekiwany błąd: {e}")
