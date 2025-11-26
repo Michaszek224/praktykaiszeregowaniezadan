@@ -1,6 +1,7 @@
 import random
 import sys
 import math
+import time
 
 class Task:
     def __init__(self, id, p, r, w):
@@ -67,76 +68,112 @@ def generate_initial_solution(tasks, num_machines=4):
     return solution
 
 def get_neighbor(solution, tasks):
-    """Generuje sąsiada przez losową operację"""
     new_solution = solution.copy()
-    operation = random.randint(0, 2)
-    
-    if operation == 0:  # Przenieś zadanie między maszynami
-        # Wybierz niepustą maszynę źródłową
-        non_empty = [i for i, m in enumerate(new_solution.machines) if len(m) > 0]
-        if len(non_empty) < 2:
-            return new_solution
-        
-        machine_from = random.choice(non_empty)
-        machine_to = random.randint(0, len(new_solution.machines) - 1)
-        
-        if machine_from != machine_to and len(new_solution.machines[machine_from]) > 0:
-            task_idx = random.randint(0, len(new_solution.machines[machine_from]) - 1)
-            task = new_solution.machines[machine_from].pop(task_idx)
-            insert_pos = random.randint(0, len(new_solution.machines[machine_to]))
-            new_solution.machines[machine_to].insert(insert_pos, task)
-    
-    elif operation == 1:  # Zamień kolejność dwóch zadań na tej samej maszynie
-        non_empty = [i for i, m in enumerate(new_solution.machines) if len(m) > 1]
-        if not non_empty:
-            return new_solution
-        
-        machine = random.choice(non_empty)
-        if len(new_solution.machines[machine]) > 1:
-            idx1, idx2 = random.sample(range(len(new_solution.machines[machine])), 2)
-            new_solution.machines[machine][idx1], new_solution.machines[machine][idx2] = \
-                new_solution.machines[machine][idx2], new_solution.machines[machine][idx1]
-    
-    else:  # Przenieś zadanie w obrębie tej samej maszyny
-        non_empty = [i for i, m in enumerate(new_solution.machines) if len(m) > 1]
-        if not non_empty:
-            return new_solution
-        
-        machine = random.choice(non_empty)
-        if len(new_solution.machines[machine]) > 1:
-            idx_from = random.randint(0, len(new_solution.machines[machine]) - 1)
-            idx_to = random.randint(0, len(new_solution.machines[machine]) - 1)
-            task = new_solution.machines[machine].pop(idx_from)
-            new_solution.machines[machine].insert(idx_to, task)
-    
-    new_solution.cost = calculate_cost(new_solution, tasks)
-    return new_solution
 
-def simulated_annealing(tasks, initial_temp=1000, cooling_rate=0.995, 
-                       min_temp=0.1, max_iterations=50000):
+    # -- Przygotuj pomocnicze dane --
+    task_dict = {t.id: t for t in tasks}
+
+    # Obciążenie każdej maszyny
+    machine_loads = []
+    for m in new_solution.machines:
+        load = sum(task_dict[tid].p for tid in m)
+        machine_loads.append(load)
+
+    # Wybór ruchu z priorytetami:
+    # 0 = swap między zadaniami na tej samej maszynie (35%)
+    # 1 = swap między maszynami (40%)
+    # 2 = przeniesienie zadania (25%)
+    r = random.random()
+
+    # 1. SWAP NA TEJ SAMEJ MASZYNIE (35%)
+    if r < 0.35:
+        candidates = [i for i, m in enumerate(new_solution.machines) if len(m) > 1]
+        if candidates:
+            machine = random.choice(candidates)
+            m = new_solution.machines[machine]
+
+            # swap dwóch losowych zadań
+            i, j = random.sample(range(len(m)), 2)
+            m[i], m[j] = m[j], m[i]
+
+        new_solution.cost = calculate_cost(new_solution, tasks)
+        return new_solution
+
+    # 2. SWAP MIĘDZY MASZYNAMI (40%)
+    elif r < 0.75:
+        # wybierz 2 różne niepuste maszyny
+        candidates = [i for i, m in enumerate(new_solution.machines) if len(m) > 0]
+        if len(candidates) >= 2:
+            m1, m2 = random.sample(candidates, 2)
+            L1 = new_solution.machines[m1]
+            L2 = new_solution.machines[m2]
+
+            # swap pojedynczych zadań
+            idx1 = random.randrange(len(L1))
+            idx2 = random.randrange(len(L2))
+
+            L1[idx1], L2[idx2] = L2[idx2], L1[idx1]
+
+        new_solution.cost = calculate_cost(new_solution, tasks)
+        return new_solution
+
+    # 3. PRZENIESIENIE ZADANIA (25%)
+    else:
+        # wybierz maszynę proporcjonalnie do obciążenia
+        # → bardziej obciążone maszyny są częściej wybierane
+        if sum(machine_loads) > 0:
+            m_from = random.choices(
+                range(len(new_solution.machines)),
+                weights=machine_loads
+            )[0]
+        else:
+            # fallback
+            non_empty = [i for i, m in enumerate(new_solution.machines) if len(m) > 0]
+            if not non_empty:
+                return new_solution
+            m_from = random.choice(non_empty)
+
+        if len(new_solution.machines[m_from]) == 0:
+            return new_solution
+
+        # losowe zadanie do przeniesienia
+        idx = random.randrange(len(new_solution.machines[m_from]))
+        task = new_solution.machines[m_from].pop(idx)
+
+        # wybierz inną maszynę
+        machines_idx = list(range(len(new_solution.machines)))
+        machines_idx.remove(m_from)
+        m_to = random.choice(machines_idx)
+
+        # wstaw zadanie w losowe miejsce
+        insert_pos = random.randint(0, len(new_solution.machines[m_to]))
+        new_solution.machines[m_to].insert(insert_pos, task)
+
+        new_solution.cost = calculate_cost(new_solution, tasks)
+        return new_solution
+
+def simulated_annealing(tasks, time_limit, initial_temp, cooling_rate, min_temp):
+    start_time = time.time()
     current = generate_initial_solution(tasks)
     best = current.copy()
-    
     temperature = initial_temp
-    iteration = 0
     
-    while temperature > min_temp and iteration < max_iterations:
+    iterations = 0
+    
+    while time.time() - start_time < time_limit:
         neighbor = get_neighbor(current, tasks)
         delta = neighbor.cost - current.cost
         
-        # Akceptuj rozwiązanie
         if delta < 0 or random.random() < math.exp(-delta / temperature):
             current = neighbor
-            
             if current.cost < best.cost:
                 best = current.copy()
-                #print(f"Iteracja {iteration}: Nowy najlepszy koszt = {best.cost}")
         
         temperature *= cooling_rate
-        iteration += 1
+        if temperature < min_temp:
+            temperature = initial_temp * 0.5
         
-        #if iteration % 1000 == 0:
-            #print(f"Iteracja {iteration}, T={temperature:.2f}, Obecny={current.cost}, Najlepszy={best.cost}")
+        iterations += 1
     
     return best
 
@@ -153,6 +190,7 @@ def main():
     
     input_file = sys.argv[1]
     output_file = sys.argv[2]
+    time_limit = float(sys.argv[3])
     
     #print("Wczytywanie danych...")
     tasks = read_input(input_file)
@@ -161,10 +199,10 @@ def main():
     #print("\nUruchamianie algorytmu wyżarzania...")
     best_solution = simulated_annealing(
         tasks,
+        time_limit -0.2,
         initial_temp=1000,
-        cooling_rate=0.995,
-        min_temp=0.1,
-        max_iterations=50000
+        cooling_rate=0.9997,
+        min_temp=1.0
     )
     
     #print(f"\nNajlepszy koszt: {best_solution.cost}")

@@ -9,5 +9,5 @@ fi
 ./autoGenerowanie.sh $x
 ./autoWeryfikacja.sh $x
 ./czytanie.sh $x
-./zamiana.sh wynikiCzasy/${x}.txt noweCzasy/${x}.txt 
+./zamiana.sh wynikiCzasy2/${x}.txt noweCzasy2/${x}.txt 
 ./pokaczas.sh $x

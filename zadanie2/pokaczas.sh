@@ -6,4 +6,4 @@ then
     echo "Usage: $0 <index>"
     exit 1
 fi
-echo "`cat noweCzasy/${index}.txt`"
+echo "`cat noweCzasy2/${index}.txt`"
