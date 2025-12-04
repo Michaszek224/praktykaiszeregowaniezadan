@@ -35,28 +35,60 @@ class IteratedGreedy:
             self.time_limit -= 5
 
     def calculate_makespan(self, pi: List[int]) -> int:
-        n = len(pi)
-        C = [[0] * 4 for _ in range(n)]
+        end_times = [0, 0, 0, 0]
 
-        # Pierwsze zadanie (brak setupu, bo nie ma poprzednika)
-        j0 = pi[0]
-        C[0][0] = self.r[j0] + self.p[j0][0]
-        for k in range(1, 4):
-            C[0][k] = C[0][k - 1] + self.p[j0][k]
+        first_job = pi[0]
+        end_times[0] = self.r[first_job] + self.p[first_job][0]
+        end_times[1] = end_times[0] + self.p[first_job][1]
+        end_times[2] = end_times[1] + self.p[first_job][2]
+        end_times[3] = end_times[2] + self.p[first_job][3]
 
-        # Pozostałe zadania
-        for i in range(1, n):
-            j = pi[i]
-            prev_j = pi[i - 1]
-            setup = self.S[prev_j][j]
-            # Maszyna 1: setup + uwzględnij release time
-            C[i][0] = max(C[i - 1][0] + setup, self.r[j]) + self.p[j][0]
+        prev_job = first_job
 
-            # Maszyny 2-4: każda ma swój setup
-            for k in range(1, 4):
-                C[i][k] = max(C[i][k - 1], C[i - 1][k] + setup) + self.p[j][k]
+        # Iterujemy od drugiego zadania
+        for i in range(1, len(pi)):
+            curr_job = pi[i]
+            setup = self.S[prev_job][curr_job]
 
-        return C[n - 1][3]
+            # --- MASZYNA 0 ---
+            # Dostępna po: zakończeniu poprz. zadania + setup
+            # Ale zadanie może wejść dopiero w r[curr_job]
+            start_m0 = end_times[0] + setup
+            if start_m0 < self.r[curr_job]:
+                start_m0 = self.r[curr_job]
+            end_times[0] = start_m0 + self.p[curr_job][0]
+
+            # --- MASZYNY 1, 2, 3 ---
+            # Maszyna k musi być wolna (end_times[k] + setup)
+            # I zadanie musi zejść z maszyny k-1 (end_times[k-1])
+
+            # Maszyna 1
+            machine_ready = end_times[1] + setup
+            prev_machine_finish = end_times[0]
+            if machine_ready > prev_machine_finish:
+                end_times[1] = machine_ready + self.p[curr_job][1]
+            else:
+                end_times[1] = prev_machine_finish + self.p[curr_job][1]
+
+            # Maszyna 2
+            machine_ready = end_times[2] + setup
+            prev_machine_finish = end_times[1]
+            if machine_ready > prev_machine_finish:
+                end_times[2] = machine_ready + self.p[curr_job][2]
+            else:
+                end_times[2] = prev_machine_finish + self.p[curr_job][2]
+
+            # Maszyna 3
+            machine_ready = end_times[3] + setup
+            prev_machine_finish = end_times[2]
+            if machine_ready > prev_machine_finish:
+                end_times[3] = machine_ready + self.p[curr_job][3]
+            else:
+                end_times[3] = prev_machine_finish + self.p[curr_job][3]
+
+            prev_job = curr_job
+
+        return end_times[3]
 
     def neh_construction(self) -> List[int]:
         """NEH z modyfikacją dla rj i Sij"""
@@ -155,8 +187,17 @@ class IteratedGreedy:
 
         current_pi = best_pi[:]
 
+        # Parametry adaptacyjne
+        if self.n > 300:
+            d = 3  # Dla dużych instancji psujemy bardzo mało, żeby szybko naprawiać
+            use_local_search = False  # Wyłączamy LS, bo dla N=500 zabije procesor
+        elif self.n > 100:
+            d = 4
+            use_local_search = True
+        else:
+            d = max(2, self.n // 10)
+            use_local_search = True
         # Parametry
-        d = max(2, self.n // 10)  # Usuń ~10% zadań
         no_improve_count = 0
         max_no_improve = 100
 
@@ -181,7 +222,7 @@ class IteratedGreedy:
                 break
 
             # Lokalne przeszukiwanie (co 10 iteracji)
-            if iterations % 10 == 0:
+            if use_local_search and iterations % 10 == 0:
                 new_pi = self.local_search(new_pi)
                 if time.time() - start_time >= self.time_limit:
                     break
