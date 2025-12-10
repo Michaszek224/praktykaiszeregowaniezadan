@@ -58,8 +58,6 @@ def weryfikuj(plik_wejsciowy, plik_wyjsciowy):
 
     bledy = []
 
-    print("\n--- WERYFIKACJA ---")
-
     # TEST 1: liczba zadań
     if len(sekwencja) != n:
         bledy.append("Błąd: sekwencja nie zawiera dokładnie n zadań.")
