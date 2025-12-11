@@ -58,20 +58,51 @@ def weryfikuj(plik_wejsciowy, plik_wyjsciowy):
 
     bledy = []
 
+    # TEST 1: liczba zadań
+    if len(sekwencja) != n:
+        bledy.append("Błąd: sekwencja nie zawiera dokładnie n zadań.")
+        print(f"BŁĄD: Sekwencja ma {len(sekwencja)} zadań, oczekiwano {n}")
+    else:
+        print("OK: liczba zadań poprawna")
+
+    # TEST 2: unikalność
+    if len(set(sekwencja)) != len(sekwencja):
+        bledy.append("Błąd: sekwencja zawiera duplikaty.")
+        dup = [x for x in sekwencja if sekwencja.count(x) > 1]
+        print(f"BŁĄD: Duplikaty: {set(dup)}")
+    else:
+        print("OK: brak duplikatów")
+
+    # TEST 3: zakres numerów
+    niepoprawne = [x for x in sekwencja if not (1 <= x <= n)]
+    if niepoprawne:
+        bledy.append("Błąd: sekwencja zawiera numery spoza 1..n")
+        print(f"BŁĄD: Niepoprawne zadania: {niepoprawne}")
+    else:
+        print("OK: numery zadań poprawne")
+
+    # TEST 4: kompletność
+    brakujace = set(range(1, n + 1)) - set(sekwencja)
+    if brakujace:
+        bledy.append("Błąd: brakuje zadań w sekwencji.")
+        print(f"BŁĄD: Brakujące: {brakujace}")
+    else:
+        print("OK: wszystkie zadania obecne")
+
     # TEST 5: wartość Cmax
     if not bledy:
         Cmax_obliczony = oblicz_Cmax(zadania, S, sekwencja)
 
-        # print(f"\nPodany Cmax:    {Cmax_podany}")
-        print(f"{Cmax_obliczony}")
+        print(f"\nPodany Cmax:    {Cmax_podany}")
+        print(f"Obliczony Cmax: {Cmax_obliczony}")
 
-        # if Cmax_podany != Cmax_obliczony:
-        #   bledy.append("Błąd: wartość Cmax niepoprawna.")
-        #  print("BŁĄD: wartości się różnią!")
-        # else:
-        #   print("OK: wartość Cmax poprawna")
-    # else:
-    #   print("\nPOMINIĘTO obliczenie Cmax z powodu wcześniejszych błędów.")
+        if Cmax_podany != Cmax_obliczony:
+            bledy.append("Błąd: wartość Cmax niepoprawna.")
+            print("BŁĄD: wartości się różnią!")
+        else:
+            print("OK: wartość Cmax poprawna")
+    else:
+        print("\nPOMINIĘTO obliczenie Cmax z powodu wcześniejszych błędów.")
 
     return bledy
 
@@ -88,8 +119,7 @@ if __name__ == "__main__":
         try:
             bledy = weryfikuj(plik_in, plik_out)
             if not bledy:
-                pass
-                # print("\n>>> ROZWIĄZANIE JEST POPRAWNE ✔\n")
+                print("\n>>> ROZWIĄZANIE JEST POPRAWNE ✔\n")
             else:
                 print("\n>>> WYKRYTO BŁĘDY ❌")
                 for b in bledy:
