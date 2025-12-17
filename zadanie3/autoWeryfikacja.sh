@@ -11,8 +11,8 @@ fi
 NUMER="$1"
 
 for ((i=50; i<=500; i+=50)); do
-    echo "===> Uruchamiam test: dane/${NUMER}/in_${NUMER}_${i}.txt"
-    python weryfikator.py "dane/155863/in_155863_${i}.txt" "wyniki/${NUMER}/${i}.txt"
-    #python weryfikator.py "dane/${NUMER}/in_${NUMER}_${i}.txt" "wynikiTestowe/out_${i}.txt"
+    #echo "===> Uruchamiam test: dane/${NUMER}/in_${NUMER}_${i}.txt"
+    python weryfikator2.py "dane/155863/in_155863_${i}.txt" "wyniki/${NUMER}/${i}.txt"
+    #python weryfikator2.py "dane/${NUMER}/in_${NUMER}_${i}.txt" "wynikiTestowe/out_${i}.txt"
 done
 
