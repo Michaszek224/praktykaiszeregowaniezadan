@@ -30,9 +30,9 @@ class IteratedGreedy:
         elif self.n == 400:
             self.time_limit -= 3
         elif self.n == 450:
-            self.time_limit -= 4
+            self.time_limit -= 7
         elif self.n == 500:
-            self.time_limit -= 5
+            self.time_limit -= 8
 
     def calculate_makespan(self, pi: List[int]) -> int:
         end_times = [0, 0, 0, 0]
