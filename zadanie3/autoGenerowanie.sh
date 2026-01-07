@@ -1,10 +1,10 @@
 #!/bin/bash
 
 index=$1
-rm -rf wyniki/${index}
-mkdir -p wyniki/${index}
-rm -f wynikiCzasy/${index}.txt
-touch wynikiCzasy/${index}.txt
+rm -rf wyniki2/${index}
+mkdir -p wyniki2/${index}
+rm -f wynikiCzasy2/${index}.txt
+touch wynikiCzasy2/${index}.txt
 
 if [ -z "$index" ]
 then
@@ -15,5 +15,5 @@ for i in {50..500..50}
 do
     echo "$i"
     val=$((i/10))
-    python czas.py algorytmy/${index}/${index}.py dane/155863/in_155863_${i}.txt wyniki/${index}/${i}.txt $val >> wynikiCzasy/${index}.txt
+    python czas.py algorytmy2/${index}/${index}.py dane/155863/in_155863_${i}.txt wyniki2/${index}/${i}.txt $val >> wynikiCzasy2/${index}.txt
 done
